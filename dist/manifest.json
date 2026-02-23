@@ -1,0 +1,29 @@
+{
+    "name": "Cetele - Spiritual Habit Tracker",
+    "short_name": "Cetele",
+    "description": "Track your spiritual habits and daily activities with ease. Monitor fasting, prayers, Quran reading, and more.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#111827",
+    "theme_color": "#10b981",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icons/icon-192x192.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512x512.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "lifestyle",
+        "productivity"
+    ],
+    "lang": "en"
+}

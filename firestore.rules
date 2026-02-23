@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to get user role from users collection
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+    
+    // Helper function to check if user is mentor
+    function isMentor() {
+      return isAuthenticated() && getUserRole() == 'mentor';
+    }
+    
+    // Helper function to check if mentor is assigned to student
+    function isMentorOfStudent(studentId) {
+      return isMentor() && 
+             get(/databases/$(database)/documents/users/$(studentId)).data.mentorId == request.auth.uid;
+    }
+    
+    // Users collection rules
+    match /users/{userId} {
+      // Users can read their own profile
+      // Mentors can read profiles of students assigned to them (for queries)
+      // Admins can read all profiles
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId ||
+        isAdmin() ||
+        // Allow mentors to read student profiles where mentorId matches
+        (isMentor() && resource.data.mentorId == request.auth.uid) ||
+        // Allow mentors to read their own assigned students
+        isMentorOfStudent(userId)
+      );
+      
+      // Allow mentors to list/query users collection for their assigned students
+      allow list: if isAuthenticated() && (
+        isAdmin() ||
+        isMentor()
+      );
+      
+      // Users can create their own profile on signup
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Users can update their own profile (except role)
+      // Admins can update any profile including role
+      allow update: if isAuthenticated() && (
+        (request.auth.uid == userId && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])) ||
+        isAdmin()
+      );
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // Activities collection rules
+    match /activities/{activityId} {
+      // Users can read their own activities
+      // Mentors can read their assigned students' activities
+      // Admins can read all activities
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isMentorOfStudent(resource.data.userId) ||
+        isAdmin()
+      );
+      
+      // Users can create activities for themselves only
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own activities
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid;
+      
+      // Users can delete their own activities
+      // Admins can delete any activity
+      allow delete: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+  }
+}
