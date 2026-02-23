@@ -26,5 +26,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: ./public_html/
-          protocol: sftp 
-          port: 21      
+          protocol: ftps # Try switching to 'ftps' if this fails
+          port: 21      # Ensure this matches what is in your Hostinger panel
