@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
             serverTimestamp = firebaseFirestore.serverTimestamp;
             return true;
         } catch (e) {
-            console.warn('Firebase not available, using local storage');
+            console.warn('Firebase not available!, using local storage');
             return false;
         }
     }
