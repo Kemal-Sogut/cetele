@@ -32,6 +32,21 @@ export function calculateWeeklyPrayers(activities) {
 }
 
 /**
+ * Calculate total prayers across ALL time (counts individual prayers, not entries)
+ * e.g. if someone prayed all 5 prayers in a day, that adds 5 to the count
+ */
+export function calculateTotalPrayers(activities) {
+    return activities
+        .filter(a => a.type === 'prayer')
+        .reduce((count, a) => {
+            if (Array.isArray(a.value)) {
+                return count + a.value.length;
+            }
+            return count + 1;
+        }, 0);
+}
+
+/**
  * Calculate total Taraweh where rakats >= 10
  */
 export function calculateTotalTaraweh(activities) {
@@ -128,6 +143,7 @@ export function formatDate(date) {
 export function calculateAllStats(activities) {
     return {
         totalFasting: calculateTotalFastingDays(activities),
+        totalPrayers: calculateTotalPrayers(activities),
         weeklyPrayers: calculateWeeklyPrayers(activities),
         totalTaraweh: calculateTotalTaraweh(activities),
         risalePages: calculateTotalPages(activities, 'risale'),

@@ -106,15 +106,44 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">New Entry</h1>
-                    <p className="text-dark-400">Select an activity to record your progress</p>
+            {/* Stats & Logs Section */}
+            <div className="mb-10">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-white">Stats & Logs</h2>
+                    <Link to="/activity/all" className="text-sm text-dark-400 hover:text-white transition-colors">
+                        View All →
+                    </Link>
                 </div>
-                <Link to="/activity/all" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-dark-700/50 hover:bg-dark-600/50 text-white transition-colors font-medium border border-white/5 shadow-lg">
-                    <span className="text-xl">📊</span>
-                    Show Logs & Stats
-                </Link>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                        { type: 'fasting', icon: '🌙', label: 'Fasting', value: userProfile?.stats?.totalFasting || 0, sub: 'Days', border: 'border-primary-500/20 hover:border-primary-500/50' },
+                        { type: 'prayer', icon: '🕌', label: 'Prayers', value: userProfile?.stats?.totalPrayers || 0, sub: 'Total', border: 'border-blue-500/20 hover:border-blue-500/50' },
+                        { type: 'taraweh', icon: '✨', label: 'Taraweh', value: userProfile?.stats?.totalTaraweh || 0, sub: 'Days', border: 'border-purple-500/20 hover:border-purple-500/50' },
+                        { type: 'risale', icon: '📖', label: 'Risale', value: userProfile?.stats?.risalePages || 0, sub: 'Pages', border: 'border-accent-500/20 hover:border-accent-500/50' },
+                        { type: 'pirlanta', icon: '💎', label: 'Pirlanta', value: userProfile?.stats?.pirlantaPages || 0, sub: 'Pages', border: 'border-pink-500/20 hover:border-pink-500/50' },
+                        { type: 'quran', icon: '📿', label: "Qur'an", value: userProfile?.stats?.quranPages || 0, sub: 'Pages', border: 'border-emerald-500/20 hover:border-emerald-500/50' },
+                        { type: 'quran_meal', icon: '📚', label: "Qur'an Meal", value: userProfile?.stats?.quranMealPages || 0, sub: 'Pages', border: 'border-blue-400/20 hover:border-blue-400/50' },
+                        { type: 'nafile', icon: '🤲', label: 'Nafile', value: userProfile?.stats?.totalNafile || 0, sub: 'Prayers', border: 'border-rose-500/20 hover:border-rose-500/50' },
+                    ].map(item => (
+                        <Link
+                            key={item.type}
+                            to={`/activity/${item.type}`}
+                            className={`glass-card flex flex-col items-center text-center p-5 hover:bg-white/5 transition-all border ${item.border} group`}
+                        >
+                            <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</span>
+                            <span className="text-2xl font-bold text-white">{item.value}</span>
+                            <span className="text-dark-400 text-sm">{item.label}</span>
+                            <span className="text-dark-500 text-xs">{item.sub}</span>
+                            <span className="mt-2 text-xs text-dark-500 group-hover:text-white transition-colors">View Log →</span>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            {/* New Entry Section */}
+            <div className="mb-6">
+                <h2 className="text-xl font-bold text-white mb-2">New Entry</h2>
+                <p className="text-dark-400 mb-4">Select an activity to record your progress</p>
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">

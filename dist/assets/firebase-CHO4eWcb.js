@@ -1,4 +1,4 @@
-import{r as a,i as r}from"./index.esm2017-0McOT6mJ.js";import{getAuth as t}from"./index.esm-CDWTYbUO.js";import{getFirestore as i}from"./index.esm-BYsSD13y.js";var o="firebase",s="10.14.1";/**
+import{r as a,i as r}from"./index.esm2017-0McOT6mJ.js";import{getAuth as t}from"./index.esm-CDWTYbUO.js";import{getFirestore as i}from"./index.esm-DAmypG3O.js";var o="firebase",s="10.14.1";/**
  * @license
  * Copyright 2020 Google LLC
  *

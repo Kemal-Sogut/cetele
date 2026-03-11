@@ -716,6 +716,34 @@ export function isLocalMode() {
     return USE_LOCAL_MODE;
 }
 
+// ─── One-time Migration / Recalculation ─────────────────────
+export async function recalculateAllUserPoints() {
+    const users = await getAllUsers();
+    let count = 0;
+
+    for (const user of users) {
+        const activities = await getUserActivities(user.id);
+
+        let totalPoints = 0;
+        for (const act of activities) {
+            totalPoints += calculateActivityPoints(act.type, act.value);
+        }
+
+        if (USE_LOCAL_MODE) {
+            localStore.updateUser(user.id, { points: totalPoints });
+        } else {
+            // Re-import just in case
+            const { doc, updateDoc } = await import('firebase/firestore');
+            await loadFirebase();
+            logApiCall('updateDoc-recalculatePoints', { userId: user.id, totalPoints });
+            await updateDoc(doc(db, 'users', user.id), { points: totalPoints });
+        }
+        count++;
+    }
+
+    return count;
+}
+
 // One-time migration function to calculate and save stats for all users
 export async function initializeAllUserStats() {
     if (USE_LOCAL_MODE) return 0;
@@ -747,8 +775,7 @@ export async function initializeAllUserStats() {
 
         let points = 0;
         activities.forEach(activity => {
-            const tempStats = calculateActivityStats(activity.type, activity.value);
-            points += tempStats.points;
+            points += calculateActivityPoints(activity.type, activity.value);
         });
 
         batch.update(userDoc.ref, {
