@@ -7,7 +7,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_API_KEY,
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "cetele-d0087.firebaseapp.com",
     projectId: "cetele-d0087",
     storageBucket: "cetele-d0087.firebasestorage.app",
